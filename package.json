@@ -2,9 +2,9 @@
   "name": "hello-world-imba",
   "version": "1.0.0",
   "description": "Hello World for Imba",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "imba src/backend/server.imba",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,10 @@
   "homepage": "https://github.com/jiggneshhgohel/hello-world-imba#readme",
   "dependencies": {
     "express": "^4.16.4",
-    "imba": "^1.4.1"
+    "imba": "^1.4.1",
+    "webpack": "^4.29.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.2.1"
   }
 }
