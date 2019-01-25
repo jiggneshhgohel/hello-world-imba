@@ -1,0 +1,22 @@
+{
+  "name": "hello-world-imba",
+  "version": "1.0.0",
+  "description": "Hello World for Imba",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiggneshhgohel/hello-world-imba.git"
+  },
+  "keywords": [
+    "imba"
+  ],
+  "author": "Jignesh Gohel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jiggneshhgohel/hello-world-imba/issues"
+  },
+  "homepage": "https://github.com/jiggneshhgohel/hello-world-imba#readme"
+}
