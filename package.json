@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/jiggneshhgohel/hello-world-imba/issues"
   },
-  "homepage": "https://github.com/jiggneshhgohel/hello-world-imba#readme"
+  "homepage": "https://github.com/jiggneshhgohel/hello-world-imba#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "imba": "^1.4.1"
+  }
 }
