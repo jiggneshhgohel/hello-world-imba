@@ -11,7 +11,7 @@ $ npm install
 # build webpack bundle
 $ npm run build
 
-# start imba-server
+# start server
 $ npm run start
 ```
 
@@ -19,6 +19,6 @@ Finally access the application at http://localhost:8080
 
 ## Want to develop it from scratch?
 
-There is a detailed [tutorial](./tutorial_readme.md) available which can be followed step by step to go through the process of 
-developing this simple application involving a lot of components to make it work. This tutorial has been keept in mind 
+There is a detailed [tutorial](./tutorial_readme.md) available which can be followed step by step to go through the process of
+developing this simple application but involving a lot of components to make it work. This tutorial has been created keeping in mind
 developers novice to Node-JS domain and related tools.
