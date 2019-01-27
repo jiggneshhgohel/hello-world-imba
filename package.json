@@ -1,10 +1,10 @@
 {
   "name": "hello-world-imba",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Hello World for Imba",
   "scripts": {
-    "start": "imba src/backend/server.imba",
-    "build": "webpack"
+    "build": "webpack",
+    "start:dev": "webpack-dev-server --content-base dist"
   },
   "repository": {
     "type": "git",
@@ -20,9 +20,9 @@
   },
   "homepage": "https://github.com/jiggneshhgohel/hello-world-imba#readme",
   "dependencies": {
-    "express": "^4.16.4",
     "imba": "^1.4.1",
-    "webpack": "^4.29.0"
+    "webpack": "^4.29.0",
+    "webpack-dev-server": "^3.1.14"
   },
   "devDependencies": {
     "webpack-cli": "^3.2.1"
