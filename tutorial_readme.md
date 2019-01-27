@@ -511,9 +511,9 @@ Now an obvious question which might arise is that why do we need webpack-dev-ser
 * Another thing is that everytime we make any changes to our frontend code in `project_root/src/frontend/client.imba` we have to rebuild the bundle using `npm run build` for making the changes come into effect on the browser and at times we might also need to restart the server using `npm run start` in case just rebuilding the bundle doesn't help.
 So this frequent rebuilding of bundle, post any changes in our frontend code, becomes a tedious task as the application grows. So how we can avoid this? How about if we had some solution which continuosly watches our frontend code and as soon as we change it, the former rebuilds the package and shows the updated changes in browser automatically? Yes that sounds like live reloading and webpack-dev-server is built to solve the problem we just discussed. So we have two things:
 
-* watch the code changes
+  * watch the code changes
 
-* live reload the changes in browser
+  * live reload the changes in browser
 
 **watch** can be leveraged by using [webpack's watch mode](https://webpack.js.org/guides/development/#using-watch-mode) and **live reload** by [webpack-dev-server](https://webpack.js.org/guides/development/#using-webpack-dev-server). webpack-dev-server also serves the static assets as was mentioned earlier in a quote from
 package's documentation page.
