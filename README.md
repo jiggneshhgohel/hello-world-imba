@@ -11,8 +11,8 @@ $ npm install
 # build webpack bundle
 $ npm run build
 
-# start server
-$ npm run start
+# start webpack-dev-server
+$ npm run start:dev
 ```
 
 Finally access the application at http://localhost:8080
