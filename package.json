@@ -4,7 +4,7 @@
   "description": "Hello World for Imba",
   "scripts": {
     "build": "webpack",
-    "start:dev": "webpack-dev-server --content-base dist"
+    "start:dev": "webpack-dev-server --content-base dist --content-base src/css"
   },
   "repository": {
     "type": "git",
