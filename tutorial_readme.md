@@ -203,7 +203,7 @@ Now the question arises how do we run this server? Will that code run using the 
 
 ```
 project_root$ node ./src/backend/server.imba
-/jwork/imba/hello-world-imba/src/backend/server.imba:1
+$project_root$/src/backend/server.imba:1
 (function (exports, require, module, __filename, __dirname) { var express = require 'express'
                                                                                     ^^^^^^^^^
 
@@ -260,13 +260,21 @@ included in our `project_root/dist/index.html` and this front-end code also we w
 
 3. Serving our front-end code written in `Imba`.
 
-That's a lot in terms of manual operations, so we should consider automating those tasks. So that brings us to [Webpack](https://webpack.js.org/). Following is an easy-to-understand description quoted (with slight updates) from a nice [beginner Node tutorial](https://www.nodebeginner.org/blog/post/setting-up-a-javascript-project-for-es6-development-with-babel-and-webpack/) I found on web.
+That's a lot in terms of manual operations, so we should consider automating those tasks. So that brings us to [Webpack](https://webpack.js.org/). Following is an easy-to-understand description quoted (with slight modifications) from a nice [beginner Node tutorial](https://www.nodebeginner.org/blog/post/setting-up-a-javascript-project-for-es6-development-with-babel-and-webpack/) I found on web.
 
 > Webpack describes [itself](https://webpack.js.org/concepts/) as *a static module bundler for modern JavaScript applications*.The reason it exists is that the way we want to organize our own code and its external dependencies, and the way that JavaScript and other assets are best served to a browser, are often very different, and this difference can be cumbersome to manage.
 
 > Webpack makes this a lot easier: we organize and write our own code the way we want, we refer to external dependencies like the NPM-installed packages the way we want, and we have Webpack bundle it all together in one single bundle file which has all the content the browser needs, served in the format it likes.
 
 > The price we pay for this is some setup work that we need to do, but which isn’t that complicated.
+
+One more easy to understand explanation of the purpose of Webpack I found [here](https://medium.com/@paul.allies/webpack-managing-javascript-and-css-dependencies-3b4913f49c58).
+I have quoted it below with slight modifications:
+
+> Webpack is a build tool to manage your dependencies (css, js, etc.). But why do we need it when we can just add js and css to our html file.
+
+> For a small size application we don’t need to manage the dependencies of js and css, however as your application grows they will need to be kept track of
+many file dependencies and their loading order. Additionally, code minification is not implemented. Webpack helps is in improving our dependency management.
 
 So we start by installing [Webpack](https://www.npmjs.com/package/webpack)
 
@@ -322,11 +330,11 @@ module.exports = {
 
 That config tells Webpack several things:
 
-* the entry file of our frontend application is `src/frontend/client.imba` which should be compiled and output a bundle in `project_root/dist/client.js`
-* we want to use the Imba loader `imba/loader`. Usually a loader is to be installed like other packages but in case of Imba in its recent versions it comes with its own Webpack loader. Please refer [here](https://www.npmjs.com/package/imba-loader) for more details. To know more about Webpack Loaders please refer [here](https://www.npmjs.com/package/webpack#loaders)
-* Imba loader loader shall only process `.imba` files
-* We also want Imba to ignore any files that don’t end in `.imba`
+* the entry file of our frontend application is `src/frontend/client.imba` which should be compiled and output a bundle in `project_root/dist/client.js`. Starting at the entry file webpack will merge all the code into one bundle file, here called `client.js` which would be generated in `project_root/dist` folder which is configured throug the `output` option as shown above.
 
+* we want to use the Imba loader `imba/loader`. Usually a loader is to be installed like other packages but in case of Imba in its recent versions it comes with its own Webpack loader. Please refer [here](https://www.npmjs.com/package/imba-loader) for more details. To know more about Webpack Loaders please refer [here](https://www.npmjs.com/package/webpack#loaders)
+
+* Imba loader loader shall only process `.imba` files
 
 Next to automate our server start step we update our `package.json` in following manner:
 
@@ -384,7 +392,7 @@ _Note: The dependencies versions are the then versions when the dependencies wer
 
 ```
 
-> hello-world-imba@1.0.0 build /jwork/imba/hello-world-imba
+> hello-world-imba@1.0.0 build $project_root$
 > webpack
 
 
@@ -710,7 +718,7 @@ project_root$ npm run start:dev
 This time you should see an following additional line in the output in addition to the output previously shown for this command
 
 ```
-ℹ ｢wds｣: Content not from webpack is served from /jwork/imba/hello-world-imba/dist
+ℹ ｢wds｣: Content not from webpack is served from $project_root$/dist
 ```
 
 Now open a browser window at http://localhost:8080 and you should see your `Hello, World!` in the browser page.
@@ -767,12 +775,464 @@ So finally we are done with this. Now save the changes made in codebase and comm
 
 -----------------------------
 
+Now let's introduce CSS into our application for styling our page. For this application we would use [W3.CSS](https://www.w3schools.com/w3css/default.asp). Its's documentation says
+
+> W3.CSS is a modern CSS framework with built-in responsiveness. It supports responsive mobile first design by default, and it is smaller and faster than similar CSS frameworks.
+
+> W3.CSS can also speed up and simplify web development because it is easier to learn, and easier to use than other CSS frameworks
+
+So using W3.CSS we can avoid writing the boilerplate for standard styles needed in a typical web application.
+
+OK so let's start.
+
+First download the W3.CSS from the official [source](https://www.w3schools.com/w3css/default.asp).
+
+Next create a folder `css` under `project_root/src` and copy the downloaded W3.CSS to it.
+
+Next open up `project_root/dist/index.html` in an editor and add following content under the `<head>` tag in it:
+
+```
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="src/css/w3.css">
+```
+
+Next open up `project_root/src/frontend/client.imba` in an editor and replace the code under `<self>` with following:
+
+```
+<div.w3-container.w3-teal>
+    <h1> "Hello, World!"
+
+<div.w3-container>
+    <p>
+        "This is the traditional Hello World application built using "
+        <a href="http://imba.io" target="_blank"> "Imba"
+        <span> "."
+
+<div.w3-container.w3-teal>
+    <p> "Footer"
+```
+
+_**Note that Imba is indentation-based so inconsistent indentation would cause Imba compiler to raise errors**_
+
+
+Now re-build the bundle using following command, in case you made the above change prior running `npm run start:dev`.
+
+
+```
+project_root$ npm run build
+```
+
+*If the webpack-dev-server was first started and then the changes were made that have caused Webpack to automatically rebuild the bundle. To recollect refer the details above regarding watch and live-reloading explained in earlier part of the tutorial.*
+
+Assuming webpack-dev-server is not running start it using command
+
+```
+project_root$ npm run start:dev
+```
+
+and then open a browser window at http://localhost:8080 and you should see the the content added in `client.imba` to be rendered as styled with the W3.CSS stylings we used.
+
+**Wait! It shows updated content but no styles are getting applied.**
+
+OK to find out the root cause behind this problem we should look into Browser's Developer Tools. For e.g. in Firefox `Inspector` tab I can see the DOM source.
+There in we need to look into whether the `src/css/w3.css` path is resolved and whether the stylesheet is loaded. Checking that we should see that the stylesheet
+is not loaded and hence the stylings weren't applied to markup. To find out the cause behind it not getting resolved try accessing the CSS file from the browser by
+typing in `http://localhost:8080/src/css/w3.css` in the address bar and you should see following message
+
+> Cannot GET /src/css/w3.css
+
+So the root cause is that the CSS file path is not getting resolved. Now if you recollect we specified `--content-base dist` in `start:dev` script command. As we are already aware the path specified for content-base tells the webpack-dev-server where to serve the content from. It already serves the content from `project_root/dist` folder. And now we want the server to serve our CSS files from `project_root/src/css` folder. So we have a need to serve content from multiple folders of our application. Now if we check
+the `devServer.contentBase` [documentation](https://webpack.js.org/configuration/dev-server/#devserver-contentbase) it says
+
+> It is also possible to serve from multiple directories:
+
+so we should leverage this feature. To do this we update the `scripts` section in our `package.json` in following manner
+
+```
+  "scripts": {
+    "build": "webpack",
+    "start:dev": "webpack-dev-server --content-base dist --content-base src/css"
+  },
+```
+
+**_Note: Refer https://stackoverflow.com/a/54492872/936494 regarding from CLI how multiple directories can be specified for `--content-base` argument)_**
+
+Now stop and restart the server. This time when you start the server you should see logs like following:
+
+```
+> hello-world-imba@1.1.0 start:dev $project_root$
+> webpack-dev-server --content-base dist --content-base src/css
+
+ℹ ｢wds｣: Project is running at http://localhost:8080/
+ℹ ｢wds｣: webpack output is served from /
+ℹ ｢wds｣: Content not from webpack is served from $project_root$/dist, $project_root$/src/css
+ℹ ｢wdm｣: Hash: b7dea8b91a7a1758297f
+```
+
+which informs that server is serving content from following folders: `project_root/dist`, `project_root/src/css`.
+
+Now let's again open the URL `http://localhost:8080` and see that we get the styled page.
+
+**Nope! It still shows unstyled page!**
+
+OK that implies the CSS file is still not getting loaded. In that case let's try to access the CSS file directly using URL `http://localhost:8080/src/css/w3.css`.
+No it shows the same error previously seen:
+
+> Cannot GET /src/css/w3.css
+
+OK so what could be the issue now? Pondering over how the `index.html` from `project_root/dist` is served, we don't access the `index.html` by specifying the full path
+in URL i.e we don't use the URL `http://localhost:8080/dist/index.html`. Accessing that URL should show following error:
+
+> Cannot GET /dist/index.html
+
+But if we use the URL `http://localhost:8080/index.html` we can see the page contents being rendered. So we can infer that to access the files served from specified
+content-base paths we should access those files without prefixing those file-names with those specified paths i.e. to access `w3.css` from `src/css`, we should use
+the URL `http://localhost:8080/w3.css` and NOT `http://localhost:8080/src/css/w3.css`. So let's try accessing the former URL `http://localhost:8080/w3.css`. Bingo! The CSS file got loaded. So according to this finding, for the CSS to be resolved by `index.html` we should update the following line in it
+
+```
+<link rel="stylesheet" href="src/css/w3.css">
+```
+
+WITH
+
+```
+<link rel="stylesheet" href="w3.css">
+```
+
+Now try refreshing the page in browser. Bingo! Now we can see a styled Hello, World! page. Congrats!
+
+Now save the changes made in codebase and commit the changes.
+
+-----------------------------
+
+Now that CSS is successfully integrated into our application let's work onto managing this dependency through Webpack because as of now we manage its inclusion in our `index.html` manually. Webpack makes this management possible through its Loaders concept.
+
+Following are some easy to understand explanation of the Loaders I found at referenced places:
+
+[Reference-1](https://medium.com/@paul.allies/webpack-managing-javascript-and-css-dependencies-3b4913f49c58).
+
+> Loaders are tasks that are applied on a per file basis and run when webpack is building your bundle. A typical task would be preprocess a sass file into css and load the output into the head section of our html file.
+
+
+[Reference-2](https://medium.com/a-beginners-guide-for-webpack-2/webpack-loaders-css-and-sass-2cc0079b5b3a)
+
+> Webpack by itself only knows javascript, so when we want it to pack any other type of resources like .css or .scss or .ts, webpack needs help in order to compile and bundle those non-javascript types of resources.
+
+> Loaders are the node-based utilities built for webpack to help webpack to compile and/or transform a given type of resource that can be bundled as a javascript module.
+
+_Also we have already seen a Loader in action earlier, the Imba Loader, we configured in our `webpack.config.js`._
+
+
+So getting back to our requirement we would utilize following loaders: [css-loader](https://www.npmjs.com/package/css-loader) and [style-loader](https://www.npmjs.com/package/style-loader). Again quoting the easy to follow explanation of both of them from **Reference-2** mentioned above:
+
+> css-loader would help webpack to collect CSS from all the css files referenced in your application and put it into a string.
+
+> style-loader would take the output string generated by the css-loader and put it inside the `<style>` tags in our `index.html` file.
+
+So let's start by installing them
+
+```
+project_root$ npm install css-loader style-loader --save-dev
+```
+
+__*Note that we are using `--save-dev` option above because these dependencies are really development dependencies and should not be required to be installed on
+if we deploy this application to a live server (aka production environment). Earlier also we installed various dependencies like `webpack`, `webpack-dev-server` which
+when installed got added to `dependencies` section in our `package.json` and NOT in `devDependencies` section. That's because we just used the `--save` option, instead of
+`--save-dev` option while installing them. From now onwards in any installation steps we will use use those installation options as applicable.*__
+
+OK so getting back to our installation step, that should do following 2 things:
+
+1. update package.json by updating `devDependencies` section under it by appending it `css-loader` and `style-loader` packages like following
+
+```
+  "css-loader": "^2.1.0",
+  "style-loader": "^0.23.1",
+```
+
+_Note: The dependencies versions are the then versions when the dependencies were installed at on this tutorial author's local machine._
+
+2. update `package-lock.json` w.r.t changes in `package.json`
+
+Next we will update our `webpack.config.js` by adding configuration for these loaders. To do that open the file in a text-editor and add following to `module.rules` array
+like we added for Imba loader:
+
+```
+{
+    use:['style-loader','css-loader'],
+    test:/\.css$/
+}
+```
+
+That tells webpack that for any file which has filename matching with the regular expression specified in the `test` property, first use `css-loader` to compile those and then use `style-loader` on the output of `css-loader`. **Note, the order in which webpack applies loaders on the matching resources is from last to first.** This can be also seen
+specified in the official [documentation](https://webpack.js.org/concepts/loaders/#configuration) as quoted below:
+
+> Loaders are evaluated/executed from right to left
+
+Now that for those loaders to bundle our CSS they will need to finds it in the dependency tree when it starts building the package starting from the entry file configured in `webpack.config.js`. To make it found we do two thing:
+
+1. update `project_root/dist/index.html` by removing the following `<link>` tag we manually added in earlier steps.
+
+```
+<link rel="stylesheet" href="w3.css">
+```
+
+That is because now we need the inclusion of our CSS to be managed by webpack so we simply remove it and to make our configured loaders find the CSS we add it to our dependency tree by following the step 2 below
+
+2. update our entry file i.e. `project_root/src/frontend/client.imba` by adding following `import` statement at the top to have it considered as a module dependency by webpack.
+
+```
+import '../css/w3.css'
+```
+
+_Note: `import` is supported by Imba. You can find examples at http://imba.io/guides/language/modules_
+
+
+Now re-build the bundle using following command, in case you made the above change prior running `npm run start:dev`.
+
+
+```
+project_root$ npm run build
+```
+
+*If the webpack-dev-server was first started and then the changes were made that have caused Webpack to automatically rebuild the bundle. To recollect refer the details above regarding watch and live-reloading explained in earlier part of the tutorial.*
+
+Assuming webpack-dev-server is not running start it using command
+
+```
+project_root$ npm run start:dev
+```
+
+and then open a browser window at http://localhost:8080 and you should see the the styled content.
+
+Now open the Browser's Developer Tools, for e.g. in Firefox `Inspector` tab check the DOM source you should find the source of our `w3.css` injected as a string into
+`<style>` tag under `<head>` tag which confirms that the styling was injected by our configured css-loader and style-loader because how we initially referenced our
+CSS using `<link>` tag, to make the styles available for use to our page, we removed it in step 1 earlier.
+
+One last thing: Since we removed the `<link>` tag referencing our CSS there seems now no need to make webpack-dev-server serve content from `src/css` folder. Thus we should
+update our `package.json` by removing `--content-base src/css` option from `"start:dev"` command. After doing that our `scripts` section should look like
+
+```
+  "scripts": {
+    "build": "webpack",
+    "start:dev": "webpack-dev-server --content-base dist"
+  },
+```
+
+Now restart the server again and refresh the page at http://localhost:8080 and you should still see the the styled content.
+
+Now save the changes made in codebase and commit the changes.
+
+-----------------------------
+
+Continuing our CSS management part from previous steps now we will work onto introducing a Webpack Plugin which should facilitate bundling our CSS in a separate file, unlike
+bundling and getting it injected into `<style>` tag. An easy to follow reasoning for doing this is quoted below, with slight modifications, from [this]((https://medium.com/a-beginners-guide-for-webpack-2/extract-text-plugin-668e7cd5f551)) reference:
+
+> getting the CSS files bundled and then getting the resulting css included within the <style> tags is okay at the point of the beginning of the development phase when we have very little css, but as our CSS will grow, it would be nice to have our CSS generated in a separate text file like app.bundle.css instead of having all the CSS getting injected as a string within the <style> tags in the html file.
+
+To deal with that we should be using a Webpack [Plugin](https://webpack.js.org/concepts/#plugins). An easy to understand explanation of Plugin concept is quoted below from [this](https://medium.com/@paul.allies/webpack-managing-javascript-and-css-dependencies-3b4913f49c58) reference:
+
+> Plugin is a process applied on your bundle before it is sent to the output file. A typical plugin is the minification plugin.
+
+Note that the references linked here demonstrates, dealing with the above mentioned concern, using [Extract Text Plugin](https://www.npmjs.com/package/extract-text-webpack-plugin). However on the plugin's [Homepage](https://github.com/webpack-contrib/extract-text-webpack-plugin#usage) following warning is issued
+
+> Since webpack v4 the extract-text-webpack-plugin should not be used for css. Use [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin) instead.
+
+Since we are using webpack v4 in our application we will use the suggested **mini-css-extract-plugin**.
+
+OK so let's start by installing it
+
+```
+project_root$ npm install mini-css-extract-plugin --save-dev
+```
+
+That should do following 2 things:
+
+1. update package.json by updating `devDependencies` section under it by appending it `mini-css-extract-plugin` package like following
+
+```
+  "mini-css-extract-plugin": "^0.5.0",
+```
+
+_Note: The dependencies versions are the then versions when the dependencies were installed at on this tutorial author's local machine._
+
+2. update `package-lock.json` w.r.t changes in `package.json`
+
+Next we will update our `webpack.config.js` by adding configuration for this plugin. To do that open the file in a text-editor and do following:
+
+1. add following at the top of file BEFORE `module.exports`:
+
+```
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+```
+
+2. add following under `module.exports`
+
+```
+plugins: [
+  new MiniCssExtractPlugin()
+],
+```
+
+3. replace following under `module.rules` array
+
+```
+{
+    use:['style-loader','css-loader'],
+    test:/\.css$/
+}
+```
+
+WITH
+
+```
+{
+    test:/\.css$/,
+    use: [
+      MiniCssExtractPlugin.loader,
+      "css-loader"
+    ]
+}
+```
+
+That is similar to how we specified `style-loader` and `css-loader` earlier. The only different here is that here we have replaced `style-loader` with `MiniCssExtractPlugin.loader`. And that tells webpack that for any file which has filename matching with the regular expression specified in the `test` property, first use `css-loader` to compile those and then use `MiniCssExtractPlugin.loader` on the output of `css-loader`.
+
+So after those modifications our `webpack.config.js` should look like (note unchanged parts are shown as truncated with `...`)
+
+
+```
+....
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+module.exports = {
+    ...,
+    ...,
+    plugins: [
+      new MiniCssExtractPlugin()
+    ],
+    module: {
+        rules: [
+            ...,
+            {
+                test:/\.css$/,
+                use: [
+                  MiniCssExtractPlugin.loader,
+                  "css-loader"
+                ]
+            }
+        ]
+    },
+    ...,
+    ...
+}
+```
+
+Note that we didn't used the Minimal Config as shown [here](https://github.com/webpack-contrib/mini-css-extract-plugin#minimal-example). That is we didn't provided
+following options while instantiating `MiniCssExtractPlugin`
+
+```
+filename: "[name].css",
+chunkFilename: "[id].css"
+```
+
+neither we specified following loader options
+
+```
+options: {
+  // you can specify a publicPath here
+  // by default it use publicPath in webpackOptions.output
+  publicPath: '../'
+}
+```
+
+**That's because we don't need such customizations at this point and the default values for those options should work for us.**
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+BTW if you are wondering what does `[name]`, `[id]` etc mean then you should refer the official [documentation](https://webpack.js.org/configuration/output/#output-filename).
+In a nutshell they are placeholders used to attach specific information to webpack output. Additional references I found are listed below:
+
+* https://survivejs.com/webpack/optimizing/adding-hashes-to-filenames/
+* https://stackoverflow.com/q/50202837/936494
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Now let's re-build the bundle using following command
+
+
+```
+project_root$ npm run build
+```
+
+That should show output like following
+
+```
+> hello-world-imba@1.1.0 build $project_root$
+> webpack
+
+Hash: 101c2d4b5d4bf36e9417
+Version: webpack 4.29.0
+Time: 697ms
+Built at: 02/08/2019 2:26:38 AM
+    Asset      Size  Chunks             Chunk Names
+  app.css  22.9 KiB     app  [emitted]  app
+client.js   108 KiB     app  [emitted]  app
+Entrypoint app = app.css client.js
+[./node_modules/webpack/buildin/global.js] (webpack)/buildin/global.js 472 bytes {app} [built]
+[./src/css/w3.css] 39 bytes {app} [built]
+[./src/frontend/client.imba] 872 bytes {app} [built]
+    + 14 hidden modules
+Child mini-css-extract-plugin node_modules/css-loader/dist/cjs.js!src/css/w3.css:
+    Entrypoint mini-css-extract-plugin = *
+    [./node_modules/css-loader/dist/cjs.js!./src/css/w3.css] 23.5 KiB {mini-css-extract-plugin} [built]
+        + 1 hidden module
+```
+
+As can be seen there are two assets generated by names `client.js`, `app.css` both under `project_root/dist` folder as specified by our `output` property
+in `webpack.config.js`. The `app.css` has been generated by the `mini-css-extract-plugin` we configured. *The file name and the output folder to generate to etc
+should be based on default values used by it.*
+
+Now let's start the webpack-dev-server using command
+
+```
+project_root$ npm run start:dev
+```
+
+and then open a browser window at http://localhost:8080 and you should see the the styled content.
+
+**Oops! It shows content but no styles are getting applied.**
+
+OK let's open the Browser's Developer Tools, for e.g. in Firefox `Inspector` tab and check the DOM source for whether we have our generated `app.css` referenced there. No! So the obvious reason for no styles getting applied is the page missing reference to our bundled CSS. If you recollect earlier we used `style-loader` to inject the bundled CSS
+into `<style>` tag under `<head>` but with `mini-css-extract-plugin` we wanted the CSS to be bundled in a separate file. Now `mini-css-extract-plugin` just generates this separate bundle and doesn't do automatic injection of bundle reference into DOM. So we should manually reference it like we did initially, when we introduced CSS into our application, using `<link>` tag, which we removed later while introducing `css-loader` and `style-loader`.
+
+So let's add the `<link>` tag again. To do that open up `project_root/dist/index.html` in a text editor and add the following `<link>` tag under the `<head>` tag
+
+```
+<link rel="stylesheet" href="app.css">
+```
+
+Since our webpack-dev-server is configured to serve content from `project_root/dist` folder the `app.css` file path doesn't need to be specified as `dist/app.css`. *To recollect refer the explanation of referencing file paths served by webpack-dev-server from a particular directory in the section where we introduced CSS in our application.*
+
+Now try refreshing the page in browser. Bingo! The styling is restored. Congrats!
+
+Now one last thing remains is to update our `.gitignore` file by adding `dist/app.css` because that is a bundled asset which is not intended to be pushed to our repository.
+
+Now save the changes made in codebase and commit the changes.
+
+
+-----------------------------
 
 ### References used for building this tutorial:
 
 * https://www.nodebeginner.org/blog/post/setting-up-a-javascript-project-for-es6-development-with-babel-and-webpack/
 
 * https://github.com/imba/hello-world-imba/commits/master
+
+* https://medium.com/@paul.allies/webpack-managing-javascript-and-css-dependencies-3b4913f49c58
+
+* https://medium.com/a-beginners-guide-for-webpack-2/webpack-loaders-css-and-sass-2cc0079b5b3a
+
+* https://medium.com/a-beginners-guide-for-webpack-2/extract-text-plugin-668e7cd5f551
 
 ### Resources to refer ahead:
 
