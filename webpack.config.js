@@ -1,20 +1,27 @@
 const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     mode: 'development',
     entry: {
       app: path.resolve(__dirname, 'src/frontend/client.imba')
     },
+    plugins: [
+      new MiniCssExtractPlugin()
+    ],
     module: {
         rules: [
             {
-                use: 'imba/loader',
                 // Only run `.imba` files through Imba Loader
                 test: /\.imba$/,
+                use: 'imba/loader',
             },
             {
-                use:['style-loader','css-loader'],
-                test:/\.css$/
+                test:/\.css$/,
+                use: [
+                  MiniCssExtractPlugin.loader,
+                  "css-loader"
+                ]
             }
         ]
     },
