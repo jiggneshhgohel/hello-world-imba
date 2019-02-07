@@ -1,3 +1,5 @@
+import '../css/w3.css'
+
 tag App
 
     def render

@@ -11,6 +11,10 @@ module.exports = {
                 use: 'imba/loader',
                 // Only run `.imba` files through Imba Loader
                 test: /\.imba$/,
+            },
+            {
+                use:['style-loader','css-loader'],
+                test:/\.css$/
             }
         ]
     },

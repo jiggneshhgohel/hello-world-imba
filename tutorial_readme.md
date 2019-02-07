@@ -274,7 +274,7 @@ I have quoted it below with slight modifications:
 > Webpack is a build tool to manage your dependencies (css, js, etc.). But why do we need it when we can just add js and css to our html file.
 
 > For a small size application we don’t need to manage the dependencies of js and css, however as your application grows they will need to be kept track of
-many file dependencies and their loading order. Additionally, code minification is not implemented. Webpack helps is in improving our dependency management
+many file dependencies and their loading order. Additionally, code minification is not implemented. Webpack helps is in improving our dependency management.
 
 So we start by installing [Webpack](https://www.npmjs.com/package/webpack)
 
@@ -330,8 +330,10 @@ module.exports = {
 
 That config tells Webpack several things:
 
-* the entry file of our frontend application is `src/frontend/client.imba` which should be compiled and output a bundle in `project_root/dist/client.js`
+* the entry file of our frontend application is `src/frontend/client.imba` which should be compiled and output a bundle in `project_root/dist/client.js`. Starting at the entry file webpack will merge all the code into one bundle file, here called `client.js` which would be generated in `project_root/dist` folder which is configured throug the `output` option as shown above.
+
 * we want to use the Imba loader `imba/loader`. Usually a loader is to be installed like other packages but in case of Imba in its recent versions it comes with its own Webpack loader. Please refer [here](https://www.npmjs.com/package/imba-loader) for more details. To know more about Webpack Loaders please refer [here](https://www.npmjs.com/package/webpack#loaders)
+
 * Imba loader loader shall only process `.imba` files
 
 Next to automate our server start step we update our `package.json` in following manner:
@@ -832,10 +834,10 @@ and then open a browser window at http://localhost:8080 and you should see the t
 
 **Wait! It shows updated content but no styles are getting applied.**
 
-OK to find out the root cause behind this problem we should look into Browser's Developer Tools. For e.g. in Firefox `Inspector` tab I can see the DOM source. There in look we need to look into
-whether the `src/css/w3.css` path is resolved and whether the stylesheet is loaded. Checking that we should see that the stylesheet is not loaded and hence the stylings
-weren't applied to markup. To find out the cause behind it not getting resolved try accessing the CSS file from the browser by typing in `http://localhost:8080/src/css/w3.css`
-in the address bar and you should see following message
+OK to find out the root cause behind this problem we should look into Browser's Developer Tools. For e.g. in Firefox `Inspector` tab I can see the DOM source.
+There in we need to look into whether the `src/css/w3.css` path is resolved and whether the stylesheet is loaded. Checking that we should see that the stylesheet
+is not loaded and hence the stylings weren't applied to markup. To find out the cause behind it not getting resolved try accessing the CSS file from the browser by
+typing in `http://localhost:8080/src/css/w3.css` in the address bar and you should see following message
 
 > Cannot GET /src/css/w3.css
 
@@ -852,6 +854,8 @@ so we should leverage this feature. To do this we update the `scripts` section i
     "start:dev": "webpack-dev-server --content-base dist --content-base src/css"
   },
 ```
+
+**_Note: Refer https://stackoverflow.com/a/54492872/936494 regarding from CLI how multiple directories can be specified for `--content-base` argument)_**
 
 Now stop and restart the server. This time when you start the server you should see logs like following:
 
@@ -882,7 +886,7 @@ in URL i.e we don't use the URL `http://localhost:8080/dist/index.html`. Accessi
 > Cannot GET /dist/index.html
 
 But if we use the URL `http://localhost:8080/index.html` we can see the page contents being rendered. So we can infer that to access the files served from specified
-content-base paths we should access those files without prefixing those file-names with those specified paths i.e. to access `w3.css` from `src/css` in URL we should use
+content-base paths we should access those files without prefixing those file-names with those specified paths i.e. to access `w3.css` from `src/css`, we should use
 the URL `http://localhost:8080/w3.css` and NOT `http://localhost:8080/src/css/w3.css`. So let's try accessing the former URL `http://localhost:8080/w3.css`. Bingo! The CSS file got loaded. So according to this finding, for the CSS to be resolved by `index.html` we should update the following line in it
 
 ```
@@ -901,6 +905,114 @@ Now save the changes made in codebase and commit the changes.
 
 -----------------------------
 
+Now that CSS is successfully integrated into our application let's work onto managing this dependency through Webpack because as of now we manage its inclusion in our `index.html` manually. Webpack makes this management possible through its Loaders concept.
+
+Following are some easy to understand explanation of the Loaders I found at referenced places:
+
+[Reference-1](https://medium.com/@paul.allies/webpack-managing-javascript-and-css-dependencies-3b4913f49c58).
+
+> Loaders are tasks that are applied on a per file basis and run when webpack is building your bundle. A typical task would be preprocess a sass file into css and load the output into the head section of our html file.
+
+
+[Reference-2](https://medium.com/a-beginners-guide-for-webpack-2/webpack-loaders-css-and-sass-2cc0079b5b3a)
+
+> Webpack by itself only knows javascript, so when we want it to pack any other type of resources like .css or .scss or .ts, webpack needs help in order to compile and bundle those non-javascript types of resources.
+
+> Loaders are the node-based utilities built for webpack to help webpack to compile and/or transform a given type of resource that can be bundled as a javascript module.
+
+_Also we have already seen a Loader in action earlier, the Imba Loader, we configured in our `webpack.config.js`._
+
+
+So getting back to our requirement we would utilize following loaders: [css-loader](https://www.npmjs.com/package/css-loader) and [style-loader](https://www.npmjs.com/package/style-loader). Again quoting the easy to follow explanation of both of them from **Reference-2** mentioned above:
+
+> css-loader would help webpack to collect CSS from all the css files referenced in your application and put it into a string.
+
+> style-loader would take the output string generated by the css-loader and put it inside the `<style>` tags in our `index.html` file.
+
+So let's start by installing them
+
+```
+project_root$ npm install css-loader style-loader --save-dev
+```
+
+__*Note that we are using `--save-dev` option above because these dependencies are really development dependencies and should not be required to be installed on
+if we deploy this application to a live server (aka production environment). Earlier also we installed various dependencies like `webpack`, `webpack-dev-server` which
+when installed got added to `dependencies` section in our `package.json` and NOT in `devDependencies` section. That's because we just used the `--save` option, instead of
+`--save-dev` option while installing them. From now onwards in any installation steps we will use use those installation options as applicable.*__
+
+OK so getting back to our installation step, that should do following 2 things:
+
+1. update package.json by updating `devDependencies` section under it by appending it `css-loader` and `style-loader` packages like following
+
+```
+  "css-loader": "^2.1.0",
+  "style-loader": "^0.23.1",
+```
+
+_Note: The dependencies versions are the then versions when the dependencies were installed at on this tutorial author's local machine._
+
+2. update `package-lock.json` w.r.t changes in `package.json`
+
+Next we will update our `webpack.config.js` by adding configuration for these loaders. To do that up the file in a text-editor and add following to `module.rules` array
+like we added for Imba loader:
+
+```
+{
+    use:['style-loader','css-loader'],
+    test:/\.css$/
+}
+```
+
+That tells webpack that for any file which has filename matching with the regular expression specified in the `test` property, first use `css-loader` to compile those and then use `style-loader` on the output of `css-loader`. **Note, the order in which webpack applies loaders on the matching resources is from last to first.** This can be also seen
+specified in the official [documentation](https://webpack.js.org/concepts/loaders/#configuration) as quoted below:
+
+> Loaders are evaluated/executed from right to left
+
+Now that for those loaders to bundle our CSS they will need to finds it in the dependency tree when it starts building the package starting from the entry file configured in `webpack.config.js`. To make it found we do two thing:
+
+1. update `project_root/dist/index.html` by removing the following `<link>` tag we manually added in earlier steps.
+
+```
+<link rel="stylesheet" href="w3.css">
+```
+
+That is because now we need the inclusion of our CSS to be managed by webpack so we simply remove it and to make our configured loaders find the CSS we add it to our dependency tree by following the step 2 below
+
+2. update our entry file i.e. `project_root/src/frontend/client.imba` by adding following `import` statement at the top to have it considered as a module dependency by webpack.
+
+```
+import '../css/w3.css'
+```
+
+_Note: `import` is supported by Imba. You can find examples at http://imba.io/guides/language/modules_
+
+
+Now re-build the bundle using following command, in case you made the above change prior running `npm run start:dev`.
+
+
+```
+project_root$ npm run build
+```
+
+*If the webpack-dev-server was first started and then the changes were made that have caused Webpack to automatically rebuild the bundle. To recollect refer the details above regarding watch and live-reloading explained in earlier part of the tutorial.*
+
+Assuming webpack-dev-server is not running start it using command
+
+```
+project_root$ npm run start:dev
+```
+
+and then open a browser window at http://localhost:8080 and you should see the the styled content.
+
+Now open the Browser's Developer Tools, for e.g. in Firefox `Inspector` tab check the DOM source you should find the source of our `w3.css` injected as a string into
+`<style>` tag under `<head>` tag which confirms that the styling was injected by our configured css-loader and style-loader because how we initially referenced our
+CSS using `<link>` tag, to make the styles available for use to our page, we removed it in step 1 earlier.
+
+Now save the changes made in codebase and commit the changes.
+
+
+-----------------------------
+
 ### References used for building this tutorial:
 
 * https://www.nodebeginner.org/blog/post/setting-up-a-javascript-project-for-es6-development-with-babel-and-webpack/
@@ -908,6 +1020,8 @@ Now save the changes made in codebase and commit the changes.
 * https://github.com/imba/hello-world-imba/commits/master
 
 * https://medium.com/@paul.allies/webpack-managing-javascript-and-css-dependencies-3b4913f49c58
+
+* https://medium.com/a-beginners-guide-for-webpack-2/webpack-loaders-css-and-sass-2cc0079b5b3a
 
 ### Resources to refer ahead:
 
