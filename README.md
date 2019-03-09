@@ -17,8 +17,7 @@ $ npm run start:dev
 
 Finally access the application at http://localhost:8080
 
-## Want to develop it from scratch?
+## Tutorial
 
-There is a detailed [tutorial](./tutorial_readme.md) available which can be followed step by step to go through the process of
-developing this simple application but involving a lot of components to make it work. This tutorial has been created keeping in mind
-developers novice to Node-JS domain and related tools.
+The steps to build this application have been documented in a tutorial format following which one should end up learning a lot of new things. You can find
+the tutorial [here](https://github.com/jiggneshhgohel/hello-world-imba-tutorial).
