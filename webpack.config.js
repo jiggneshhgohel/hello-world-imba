@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -7,7 +8,11 @@ module.exports = {
       app: path.resolve(__dirname, 'src/frontend/client.imba')
     },
     plugins: [
-      new MiniCssExtractPlugin()
+      new MiniCssExtractPlugin(),
+      new HtmlWebpackPlugin({
+        title: 'Hello World',
+        template: path.resolve(__dirname, 'src/index.html')
+      })
     ],
     module: {
         rules: [
