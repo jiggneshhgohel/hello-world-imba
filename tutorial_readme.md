@@ -822,7 +822,7 @@ Now re-build the bundle using following command, in case you made the above chan
 project_root$ npm run build
 ```
 
-*If the webpack-dev-server was first started and then the changes were made that have caused Webpack to automatically rebuild the bundle. To recollect refer the details above regarding watch and live-reloading explained in earlier part of the tutorial.*
+*If the webpack-dev-server was first started and then the changes were made that should have caused Webpack to automatically rebuild the bundle. To recollect refer the details above regarding watch and live-reloading explained in earlier part of the tutorial.*
 
 Assuming webpack-dev-server is not running start it using command
 
@@ -994,7 +994,7 @@ Now re-build the bundle using following command, in case you made the above chan
 project_root$ npm run build
 ```
 
-*If the webpack-dev-server was first started and then the changes were made that have caused Webpack to automatically rebuild the bundle. To recollect refer the details above regarding watch and live-reloading explained in earlier part of the tutorial.*
+*If the webpack-dev-server was first started and then the changes were made that should have caused Webpack to automatically rebuild the bundle. To recollect refer the details above regarding watch and live-reloading explained in earlier part of the tutorial.*
 
 Assuming webpack-dev-server is not running start it using command
 
@@ -1025,7 +1025,7 @@ Now save the changes made in codebase and commit the changes.
 -----------------------------
 
 Continuing our CSS management part from previous steps now we will work onto introducing a Webpack Plugin which should facilitate bundling our CSS in a separate file, unlike
-bundling and getting it injected into `<style>` tag. An easy to follow reasoning for doing this is quoted below, with slight modifications, from [this]((https://medium.com/a-beginners-guide-for-webpack-2/extract-text-plugin-668e7cd5f551)) reference:
+bundling and getting it injected into `<style>` tag. An easy to follow reasoning for doing this is quoted below, with slight modifications, from [this](https://medium.com/a-beginners-guide-for-webpack-2/extract-text-plugin-668e7cd5f551) reference:
 
 > getting the CSS files bundled and then getting the resulting css included within the <style> tags is okay at the point of the beginning of the development phase when we have very little css, but as our CSS will grow, it would be nice to have our CSS generated in a separate text file like app.bundle.css instead of having all the CSS getting injected as a string within the <style> tags in the html file.
 
@@ -1094,7 +1094,7 @@ WITH
 }
 ```
 
-That is similar to how we specified `style-loader` and `css-loader` earlier. The only different here is that here we have replaced `style-loader` with `MiniCssExtractPlugin.loader`. And that tells webpack that for any file which has filename matching with the regular expression specified in the `test` property, first use `css-loader` to compile those and then use `MiniCssExtractPlugin.loader` on the output of `css-loader`.
+That is similar to how we specified `style-loader` and `css-loader` earlier. The only difference here is that here we have replaced `style-loader` with `MiniCssExtractPlugin.loader`. And that tells webpack that for any file which has filename matching with the regular expression specified in the `test` property, first use `css-loader` to compile those and then use `MiniCssExtractPlugin.loader` on the output of `css-loader`.
 
 So after those modifications our `webpack.config.js` should look like (note unchanged parts are shown as truncated with `...`)
 
